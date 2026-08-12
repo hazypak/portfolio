@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Muhammad Hazqeel Neural Anchor Portfolio</title>
+  <desc id="desc">AI engineer and full-stack builder portfolio.</desc>
+  <rect width="1200" height="630" fill="#030303"/>
+  <path d="M0 470C195 350 285 555 476 444s331-164 724-30" fill="none" opacity=".35" stroke="#8b7cff" stroke-width="2"/>
+  <g fill="#8b7cff"><circle cx="190" cy="410" r="8"/><circle cx="476" cy="444" r="8"/><circle cx="770" cy="334" r="8"/><circle cx="1100" cy="414" r="8"/></g>
+  <text x="90" y="120" fill="#aaa6c7" font-family="monospace" font-size="22" letter-spacing="4">NEURAL ANCHOR / SYSTEMS</text>
+  <text x="90" y="285" fill="#f4f2fb" font-family="Arial, sans-serif" font-size="110" font-weight="800" letter-spacing="-7">MUHAMMAD</text>
+  <text x="90" y="395" fill="#f4f2fb" font-family="Arial, sans-serif" font-size="110" font-weight="800" letter-spacing="-7">HAZQEEL</text>
+  <text x="90" y="525" fill="#d0caff" font-family="Arial, sans-serif" font-size="32">AI Engineer &amp; Full-Stack Builder</text>
+</svg>

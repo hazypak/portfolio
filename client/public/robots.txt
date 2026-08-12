@@ -1,0 +1,5 @@
+# Production crawler policy for Muhammad Hazqeel's public systems portfolio.
+User-agent: *
+Allow: /
+
+Sitemap: https://aibuilder-64boblsz.manus.space/sitemap.xml

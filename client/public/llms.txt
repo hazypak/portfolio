@@ -1,0 +1,7 @@
+# Muhammad Hazqeel — Neural Anchor Systems Portfolio
+
+This public portfolio presents Muhammad Hazqeel, an AI engineer and full-stack builder based in the United Arab Emirates. The site documents autonomous-agent systems, cloud infrastructure, client and commerce builds, product experiments, game infrastructure, academic study, and public work links.
+
+Primary sections: AI and cloud infrastructure; client work and ventures; products and game infrastructure; academics; contact.
+
+The site is a static, frontend-only portfolio. It does not provide user accounts, transactional features, a contact form API, or private data access.
