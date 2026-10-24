@@ -4,7 +4,6 @@
   "installCommand": "pnpm install --frozen-lockfile",
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
-  "cleanUrls": true,
   "rewrites": [
     { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
   ],
