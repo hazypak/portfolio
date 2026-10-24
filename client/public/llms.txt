@@ -1,20 +1,18 @@
-# Muhammad Hazqeel
+# Muhammad Hazqeel Abdullah
 
-> Full-stack developer and solutions architect in the United Arab Emirates. Builds booking portals, CRMs and web infrastructure for small businesses, plus products and game server systems.
+> Full-stack developer and AI systems builder in the United Arab Emirates. Builds booking portals, CRMs, web infrastructure and AI systems for businesses, plus products and game server systems.
 
-## Client systems
-- Shabab Al Khor Mobility Car Wash (Khorfakkan, UAE): end-to-end appointment booking portal and custom CRM with online payments and real-time scheduling. Role: full-stack developer & solutions architect.
-- Virgo Lubes (https://www.virgolubes.com/): corporate website, technical SEO, analytics, domains, DNS and hosting. Role: digital infrastructure lead & web developer.
-- GHM Global Networks (https://ghmglobalnetworks.vercel.app/): web studio for client sites and automation. Role: founder & developer.
-
-## Products
-- Micro-Freelance-Hub (https://micro-freelance-hub.vercel.app/): Next.js and Supabase marketplace for student freelancers.
+## Featured work
+- Shabab Al Khor Mobility Car Wash (https://shababalkhor.vercel.app/, Khorfakkan, UAE): end-to-end appointment booking portal and custom CRM with online payments and real-time scheduling. Role: full-stack developer & solutions architect.
+- Micro Freelance Hub (https://micro-freelance-hub.vercel.app/): full-stack Next.js and Supabase marketplace for student freelancers.
 - Chassis Decoder (https://chassis-decoder.vercel.app/): automotive VIN and chassis number decoder.
 - Pixel Planet Healers (https://pixel-planet-healers.lovable.app/): interactive environmental web game.
+- Developer Portfolio / Lab (https://hazqeel.vercel.app/): this site, including an interactive exploded view of an AI system (illustrative architecture).
 
-## Game infrastructure and automation
+## Infrastructure, automation and game servers
+- Virgo Lubes (https://www.virgolubes.com/): corporate website, technical SEO, analytics, domains, DNS and hosting. Role: digital infrastructure lead & web developer.
 - Minecraft (Java, Spigot/Paper plugins, Nodes SMP network) and Roblox (Lua) development.
-- Local multi-agent workflows with Ollama; scheduled content pipelines.
+- Local multi-agent workflows with Ollama; scheduled content and order-processing pipelines.
 
 ## Links
 - GitHub: https://github.com/hazypak

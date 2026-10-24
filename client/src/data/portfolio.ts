@@ -20,6 +20,9 @@ export interface PortfolioProject {
 
 export interface ProjectGroup {
   id: string;
+  /** Anchor target; the first group is #work. */
+  anchor?: string;
+  eyebrow: string;
   title: string;
   description: string;
   projects: readonly PortfolioProject[];
@@ -43,19 +46,26 @@ export interface SpecRow {
 export const profile = {
   firstName: "Muhammad",
   lastName: "Hazqeel",
-  role: "Full-stack developer & solutions architect",
+  familyName: "Abdullah",
+  role: "Full-stack developer & AI systems builder",
   location: "United Arab Emirates",
   intro:
-    "I build the booking portals, CRMs and web infrastructure that small businesses run on, and I stay on to keep them running after launch.",
+    "I build the booking portals, CRMs, web infrastructure and AI systems that businesses run on, and I stay on to keep them running after launch.",
   github: "https://github.com/hazypak",
-  studio: "https://ghmglobalnetworks.vercel.app/",
 } as const;
+
+/**
+ * Stored in two parts and joined in the browser, so the address isn't sitting
+ * in the HTML for scrapers.
+ */
+const emailParts = ["muh.hazqeel", "gmail.com"] as const;
+export const contactEmail = () => emailParts.join("@");
 
 export const specSheet: readonly SpecRow[] = [
   {
-    label: "Building",
-    value:
-      "Booking portal + CRM for Shabab Al Khor Mobility Car Wash, Khorfakkan",
+    label: "Shipped",
+    value: "Shabab Al Khor booking portal + CRM",
+    href: "https://shababalkhor.vercel.app/",
   },
   {
     label: "Maintaining",
@@ -68,10 +78,12 @@ export const specSheet: readonly SpecRow[] = [
 
 export const groups: readonly ProjectGroup[] = [
   {
-    id: "client-systems",
-    title: "Client systems",
+    id: "featured",
+    anchor: "work",
+    eyebrow: "Featured work",
+    title: "Shipped and live",
     description:
-      "Software for businesses that take bookings, sell products and need to be found online.",
+      "Systems you can open right now: a booking platform, a marketplace, a decoder, a game and this lab.",
     projects: [
       {
         id: "shabab-al-khor",
@@ -92,57 +104,19 @@ export const groups: readonly ProjectGroup[] = [
           "Real-time scheduling",
           "CRM",
         ],
+        href: "https://shababalkhor.vercel.app/",
         size: "wide",
       },
-      {
-        id: "virgo-lubes",
-        title: "Virgo Lubes",
-        kind: "Corporate web & infrastructure",
-        role: "Digital infrastructure lead & web developer",
-        summary:
-          "Built and deployed the corporate site, then took ownership of everything around it: technical Google SEO, custom analytics, domains, DNS records and hosting.",
-        tags: ["Technical SEO", "Web analytics", "DNS & domains", "Hosting"],
-        href: "https://www.virgolubes.com/",
-        size: "narrow",
-      },
-      {
-        id: "ghm-global-networks",
-        title: "GHM Global Networks",
-        kind: "Web studio",
-        role: "Founder & developer",
-        summary:
-          "My studio for client work: fast, production-ready sites with practical automations wired into the operations behind them.",
-        tags: ["Client sites", "Automation", "Delivery"],
-        href: "https://ghmglobalnetworks.vercel.app/",
-        size: "narrow",
-      },
-      {
-        id: "ecommerce-operations",
-        title: "E-commerce operations",
-        kind: "Commerce automation",
-        role: "Operator & automation builder",
-        summary:
-          "Ran automated order-processing workflows for an e-commerce and dropshipping store, built so the same steps happen the same way every time.",
-        tags: ["Order flows", "Automation", "Operations"],
-        size: "wide",
-      },
-    ],
-  },
-  {
-    id: "products",
-    title: "Products",
-    description: "Things I designed, built and shipped end to end.",
-    projects: [
       {
         id: "micro-freelance-hub",
-        title: "Micro-Freelance-Hub",
+        title: "Micro Freelance Hub",
         kind: "Marketplace platform",
         role: "Solo full-stack build",
         summary:
-          "A marketplace where students post and pick up small freelance jobs, with proposals, submissions and role-based dashboards. Every table is locked down with Postgres row-level security.",
+          "A full-stack marketplace where students post and pick up small freelance jobs, with proposals, submissions and role-based dashboards. Every table is locked down with Postgres row-level security.",
         tags: ["Next.js", "Supabase", "Postgres RLS", "Auth"],
         href: "https://micro-freelance-hub.vercel.app/",
-        size: "wide",
+        size: "narrow",
       },
       {
         id: "chassis-decoder",
@@ -164,25 +138,48 @@ export const groups: readonly ProjectGroup[] = [
           "A browser game where players restore a damaged world. Every action feeds back into the environment, so eco-restoration plays as a system rather than a story you read.",
         tags: ["Web game", "Game systems", "Eco-restoration"],
         href: "https://pixel-planet-healers.lovable.app/",
+        size: "wide",
+      },
+      {
+        id: "developer-lab",
+        title: "Developer Portfolio / Lab",
+        kind: "This site",
+        role: "Design, engineering & security",
+        summary:
+          "The site you're on: a Vite + React build with a strict content security policy, a rate-limited contact API, and an anime.js exploded view of an AI system.",
+        tags: ["React", "anime.js", "Vercel Functions", "CSP"],
+        href: "https://hazqeel.vercel.app/",
         size: "full",
       },
     ],
   },
   {
-    id: "systems",
-    title: "Automation & game infrastructure",
+    id: "more-systems",
+    eyebrow: "More systems",
+    title: "Infrastructure, automation & game servers",
     description:
-      "Background systems: game servers, agent workflows and publishing pipelines.",
+      "Client infrastructure, background pipelines and the multiplayer servers I architect and maintain.",
     projects: [
+      {
+        id: "virgo-lubes",
+        title: "Virgo Lubes",
+        kind: "Corporate web & infrastructure",
+        role: "Digital infrastructure lead & web developer",
+        summary:
+          "Built and deployed the corporate site, then took ownership of everything around it: technical Google SEO, custom analytics, domains, DNS records and hosting.",
+        tags: ["Technical SEO", "Web analytics", "DNS & domains", "Hosting"],
+        href: "https://www.virgolubes.com/",
+        size: "wide",
+      },
       {
         id: "minecraft-roblox",
         title: "Minecraft & Roblox development",
         kind: "Game servers & scripting",
         role: "Server architect & plugin developer",
         summary:
-          "Java server architecture for the Nodes SMP network, with custom Spigot and Paper plugins, network routing and community bots, plus gameplay scripting in Lua for Roblox.",
+          "Java server architecture for the Nodes SMP network with custom Spigot and Paper plugins, plus gameplay scripting in Lua for Roblox.",
         tags: ["Java", "Spigot / Paper", "Lua", "Roblox"],
-        size: "wide",
+        size: "narrow",
       },
       {
         id: "agent-networks",
@@ -200,9 +197,9 @@ export const groups: readonly ProjectGroup[] = [
         kind: "Scheduled cloud pipelines",
         role: "Builder",
         summary:
-          "Scheduled cloud pipelines that generate, render and publish short-form video without a manual production step.",
-        tags: ["Scheduling", "Rendering", "Pipelines"],
-        size: "full",
+          "Scheduled cloud pipelines that generate, render and publish short-form video without a manual production step, alongside automated e-commerce order processing.",
+        tags: ["Scheduling", "Rendering", "Order automation"],
+        size: "wide",
       },
     ],
   },
@@ -220,11 +217,6 @@ export const engagements: readonly Engagement[] = [
     org: "Virgo Lubes",
     scope:
       "Corporate website, technical SEO, analytics, domains, DNS and hosting.",
-  },
-  {
-    role: "Founder & developer",
-    org: "GHM Global Networks",
-    scope: "Client websites and the automations behind them.",
   },
   {
     role: "Server architect & plugin developer",

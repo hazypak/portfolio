@@ -1,23 +1,60 @@
 /**
- * Contact: the form renders only when /api/contact reports delivery is
- * configured; otherwise visitors get direct links instead of a dead form.
- * The server re-validates everything; the attributes here are just guidance.
+ * Terminal-style contact module. The status log mirrors the real request:
+ * "encrypting" covers serialisation over HTTPS, "transmitting" is the actual
+ * fetch, and "sent" only appears once the API confirms delivery. The server
+ * re-validates everything; attributes here are just guidance.
  */
-import { ArrowUpRight, Check, Github, LoaderCircle } from "lucide-react";
-import { type FormEvent, useEffect, useState } from "react";
+import { Check, Copy, Mail, Send } from "lucide-react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { Reveal } from "@/components/portfolio/Reveal";
-import { profile } from "@/data/portfolio";
+import { contactEmail, profile } from "@/data/portfolio";
+import { useCopyEmail } from "@/hooks/useCopyEmail";
 
-type Status =
-  | { kind: "idle" }
-  | { kind: "sending" }
-  | { kind: "sent"; email: string }
-  | { kind: "error"; message: string };
+type Phase = "idle" | "encrypting" | "transmitting" | "sent" | "error";
 type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
+type LogLine = { text: string; tone: "info" | "ok" | "err" };
+
+const prompts = [
+  {
+    id: "booking",
+    label: "booking-system",
+    text: "I need an online booking system with payments for my business.",
+  },
+  {
+    id: "website",
+    label: "website-seo",
+    text: "I need a fast website that ranks on Google, with analytics set up.",
+  },
+  {
+    id: "crm",
+    label: "custom-crm",
+    text: "I want a simple CRM to track customers, visits and follow-ups.",
+  },
+  {
+    id: "ai",
+    label: "ai-automation",
+    text: "I'd like to automate a repetitive workflow with AI agents.",
+  },
+  {
+    id: "infra",
+    label: "dns-hosting",
+    text: "I need help with domains, DNS and hosting for an existing site.",
+  },
+] as const;
+
+const phaseLabel: Record<Phase, string> = {
+  idle: "ready",
+  encrypting: "encrypting",
+  transmitting: "transmitting",
+  sent: "sent",
+  error: "failed",
+};
+
+const wait = (ms: number) =>
+  new Promise(resolve => window.setTimeout(resolve, ms));
 
 function useContactEnabled() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
-
   useEffect(() => {
     const controller = new AbortController();
     fetch("/api/contact", {
@@ -32,13 +69,30 @@ function useContactEnabled() {
       });
     return () => controller.abort();
   }, []);
-
   return enabled;
 }
 
-function ContactForm() {
-  const [status, setStatus] = useState<Status>({ kind: "idle" });
+function ContactTerminal({ enabled }: { enabled: boolean | null }) {
+  const { copied, copy } = useCopyEmail();
+  const [phase, setPhase] = useState<Phase>("idle");
+  const [log, setLog] = useState<LogLine[]>([]);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [email, setEmail] = useState("");
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const busy = phase === "encrypting" || phase === "transmitting";
+  const online = enabled === true;
+
+  useEffect(() => setEmail(contactEmail()), []);
+
+  const push = (line: LogLine) => setLog(lines => [...lines, line]);
+
+  function applyPrompt(text: string) {
+    const field = messageRef.current;
+    if (!field) return;
+    field.value = text;
+    field.focus();
+    field.setSelectionRange(text.length, text.length);
+  }
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -47,9 +101,17 @@ function ContactForm() {
       string,
       string
     >;
-    setStatus({ kind: "sending" });
     setErrors({});
+    setLog([]);
 
+    setPhase("encrypting");
+    push({ text: "encrypting payload over TLS ...", tone: "info" });
+    const body = JSON.stringify(data);
+    await wait(450);
+    push({ text: "payload sealed", tone: "ok" });
+
+    setPhase("transmitting");
+    push({ text: "transmitting to mail relay ...", tone: "info" });
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -57,184 +119,268 @@ function ContactForm() {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify(data),
+        body,
       });
-      const body = (await res.json().catch(() => ({}))) as {
+      const result = (await res.json().catch(() => ({}))) as {
         error?: string;
         fieldErrors?: FieldErrors;
       };
       if (!res.ok) {
-        setErrors(body.fieldErrors ?? {});
-        setStatus({
-          kind: "error",
-          message:
-            body.error ?? "The message didn't go through. Try again shortly.",
+        setErrors(result.fieldErrors ?? {});
+        push({
+          text:
+            result.error ?? "The message didn't go through. Try again shortly.",
+          tone: "err",
         });
+        setPhase("error");
         return;
       }
-      form.reset();
-      setStatus({ kind: "sent", email: data.email ?? "" });
-    } catch {
-      setStatus({
-        kind: "error",
-        message: "You seem to be offline. Check your connection and try again.",
+      push({
+        text: `sent · reply will go to ${data.email ?? "your inbox"}`,
+        tone: "ok",
       });
+      setPhase("sent");
+      form.reset();
+    } catch {
+      push({
+        text: "connection lost. Check your network and try again.",
+        tone: "err",
+      });
+      setPhase("error");
     }
-  }
-
-  if (status.kind === "sent") {
-    return (
-      <div className="glass p-6 sm:p-8" role="status">
-        <Check aria-hidden="true" className="text-patina" size={22} />
-        <p className="card-title mt-5 text-2xl text-frost">Message sent.</p>
-        <p className="mt-2 text-mist">I'll reply to {status.email} soon.</p>
-        <button
-          className="btn btn-ghost mt-6"
-          onClick={() => setStatus({ kind: "idle" })}
-          type="button"
-        >
-          Send another message
-        </button>
-      </div>
-    );
   }
 
   const field = (name: keyof FieldErrors) => ({
     name,
     id: `contact-${name}`,
+    disabled: !online || busy,
     "aria-invalid": errors[name] ? true : undefined,
     "aria-describedby": errors[name] ? `contact-${name}-error` : undefined,
   });
 
   const fieldError = (name: keyof FieldErrors) =>
     errors[name] ? (
-      <p className="mt-1.5 text-xs text-[#e08a8a]" id={`contact-${name}-error`}>
-        {errors[name]}
+      <p
+        className="mt-1 text-[0.72rem] text-[#f08a9a]"
+        id={`contact-${name}-error`}
+      >
+        ! {errors[name]}
       </p>
     ) : null;
 
-  return (
-    <form className="glass relative grid gap-5 p-6 sm:p-8" onSubmit={submit}>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label className="eyebrow mb-2 block" htmlFor="contact-name">
-            Name
-          </label>
-          <input
-            autoComplete="name"
-            className="field"
-            maxLength={80}
-            minLength={2}
-            required
-            type="text"
-            {...field("name")}
-          />
-          {fieldError("name")}
-        </div>
-        <div>
-          <label className="eyebrow mb-2 block" htmlFor="contact-email">
-            Email
-          </label>
-          <input
-            autoComplete="email"
-            className="field"
-            maxLength={254}
-            required
-            type="email"
-            {...field("email")}
-          />
-          {fieldError("email")}
-        </div>
-      </div>
-      <div>
-        <label className="eyebrow mb-2 block" htmlFor="contact-message">
-          What do you need built?
-        </label>
-        <textarea
-          className="field min-h-36 resize-y"
-          maxLength={4000}
-          minLength={20}
-          placeholder="A booking system for two branches, a site that ranks locally, a server that stays up…"
-          required
-          rows={5}
-          {...field("message")}
-        />
-        {fieldError("message")}
-      </div>
-      <div aria-hidden="true" className="trap">
-        <label htmlFor="contact-company">Company</label>
-        <input
-          autoComplete="off"
-          id="contact-company"
-          name="company"
-          tabIndex={-1}
-          type="text"
-        />
-      </div>
-      <div className="flex flex-wrap items-center gap-4">
-        <button
-          className="btn btn-primary"
-          disabled={status.kind === "sending"}
-          type="submit"
-        >
-          {status.kind === "sending" ? (
-            <>
-              <LoaderCircle
-                aria-hidden="true"
-                className="animate-spin"
-                size={16}
-              />{" "}
-              Sending…
-            </>
-          ) : (
-            <>
-              Send message{" "}
-              <ArrowUpRight
-                aria-hidden="true"
-                className="btn-arrow"
-                size={16}
-              />
-            </>
-          )}
-        </button>
-        {status.kind === "error" ? (
-          <p className="text-sm text-[#e08a8a]" role="alert">
-            {status.message}
-          </p>
-        ) : null}
-      </div>
-    </form>
-  );
-}
+  const dotTone =
+    phase === "error"
+      ? "bg-[#f08a9a]"
+      : phase === "sent"
+        ? "bg-patina"
+        : busy
+          ? "bg-glacier animate-pulse"
+          : online
+            ? "bg-patina"
+            : "bg-mist";
 
-function DirectContact() {
   return (
-    <div className="glass p-6 sm:p-8">
-      <p className="eyebrow">Fastest way to reach me</p>
-      <p className="card-title mt-5 text-2xl text-frost">
-        Find me on GitHub or through my studio
-      </p>
-      <p className="mt-3 max-w-md leading-relaxed text-mist">
-        Send a line about the project through either and I'll get back to you.
-      </p>
-      <div className="mt-7 flex flex-wrap gap-3">
-        <a
-          className="btn btn-primary"
-          href={profile.github}
-          rel="noopener noreferrer"
-          target="_blank"
+    <div className="terminal">
+      <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+        <div aria-hidden="true" className="flex gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#f08a9a]/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#f5d27a]/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-patina/70" />
+        </div>
+        <p className="truncate text-[0.72rem] text-mist">
+          contact@hazqeel: ~/inbox
+        </p>
+        <p className="flex items-center gap-2 text-[0.72rem] text-frost">
+          <span
+            aria-hidden="true"
+            className={`h-2 w-2 rounded-full ${dotTone}`}
+          />
+          {online || enabled === null ? phaseLabel[phase] : "offline"}
+        </p>
+      </div>
+
+      <div className="space-y-5 p-5 text-sm sm:p-6">
+        <div>
+          <p className="text-mist">
+            <span className="text-glacier">$</span> echo $EMAIL
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <span className="text-frost">{email || "loading…"}</span>
+            <button
+              aria-live="polite"
+              className="inline-flex items-center gap-1.5 rounded-md border border-glacier/40 px-2.5 py-1 text-[0.72rem] text-glacier transition-[box-shadow,border-color] hover:border-glacier hover:shadow-[0_0_14px_rgba(64,224,240,0.35)]"
+              onClick={copy}
+              type="button"
+            >
+              {copied ? (
+                <Check aria-hidden="true" size={13} />
+              ) : (
+                <Copy aria-hidden="true" size={13} />
+              )}
+              {copied ? "copied" : "copy"}
+            </button>
+            {email ? (
+              <a
+                className="inline-flex items-center gap-1.5 text-[0.72rem] text-mist hover:text-frost"
+                href={`mailto:${email}`}
+              >
+                <Mail aria-hidden="true" size={13} /> open mail app
+              </a>
+            ) : null}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-mist">
+            <span className="text-glacier">$</span> ls inquiries/
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {prompts.map(p => (
+              <button
+                className="rounded-md border border-violet/30 bg-violet/5 px-2.5 py-1 text-[0.72rem] text-[#d4c8ff] transition-[border-color,box-shadow] hover:border-violet hover:shadow-[0_0_14px_rgba(167,139,250,0.35)] disabled:opacity-50"
+                disabled={!online || busy}
+                key={p.id}
+                onClick={() => applyPrompt(p.text)}
+                type="button"
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {enabled === false ? (
+          <p className="text-mist">
+            <span className="text-[#f5d27a]">!</span> messaging is offline right
+            now. Copy the email above, or reach me on{" "}
+            <a
+              className="text-link"
+              href={profile.github}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              GitHub
+            </a>
+            .
+          </p>
+        ) : (
+          <form className="relative space-y-4" onSubmit={submit}>
+            <p className="text-mist">
+              <span className="text-glacier">$</span> ./send-message
+            </p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  className="text-[0.72rem] text-mist"
+                  htmlFor="contact-name"
+                >
+                  name ›
+                </label>
+                <input
+                  autoComplete="name"
+                  className="term-input"
+                  maxLength={80}
+                  minLength={2}
+                  placeholder="Your name"
+                  required
+                  type="text"
+                  {...field("name")}
+                />
+                {fieldError("name")}
+              </div>
+              <div>
+                <label
+                  className="text-[0.72rem] text-mist"
+                  htmlFor="contact-email"
+                >
+                  email ›
+                </label>
+                <input
+                  autoComplete="email"
+                  className="term-input"
+                  maxLength={254}
+                  placeholder="you@company.com"
+                  required
+                  type="email"
+                  {...field("email")}
+                />
+                {fieldError("email")}
+              </div>
+            </div>
+            <div>
+              <label
+                className="text-[0.72rem] text-mist"
+                htmlFor="contact-message"
+              >
+                message ›
+              </label>
+              <textarea
+                className="term-input min-h-28 resize-y"
+                maxLength={4000}
+                minLength={20}
+                placeholder="What are you building, and where is it stuck?"
+                ref={messageRef}
+                required
+                rows={4}
+                {...field("message")}
+              />
+              {fieldError("message")}
+            </div>
+            <div aria-hidden="true" className="trap">
+              <label htmlFor="contact-company">Company</label>
+              <input
+                autoComplete="off"
+                id="contact-company"
+                name="company"
+                tabIndex={-1}
+                type="text"
+              />
+            </div>
+            <button
+              className="btn btn-primary"
+              disabled={!online || busy}
+              type="submit"
+            >
+              <Send aria-hidden="true" size={15} />
+              {busy
+                ? `${phaseLabel[phase]}…`
+                : phase === "sent"
+                  ? "Send another"
+                  : "Transmit message"}
+            </button>
+          </form>
+        )}
+
+        <div
+          aria-live="polite"
+          className="min-h-6 space-y-1 border-t border-line pt-4 text-[0.78rem]"
         >
-          <Github aria-hidden="true" size={16} /> github.com/hazypak
-        </a>
-        <a
-          className="btn btn-ghost"
-          href={profile.studio}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          GHM Global Networks{" "}
-          <ArrowUpRight aria-hidden="true" className="btn-arrow" size={16} />
-        </a>
+          {log.length === 0 ? (
+            <p className="caret text-mist">
+              {online
+                ? "awaiting input"
+                : enabled === null
+                  ? "connecting"
+                  : "standing by"}
+            </p>
+          ) : (
+            log.map((line, i) => (
+              <p
+                className={
+                  line.tone === "ok"
+                    ? "text-patina"
+                    : line.tone === "err"
+                      ? "text-[#f08a9a]"
+                      : "text-glacier"
+                }
+                key={`${i}-${line.text}`}
+              >
+                {line.tone === "ok" ? "✓" : line.tone === "err" ? "✗" : "›"}{" "}
+                {line.text}
+              </p>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
@@ -253,29 +399,20 @@ export function ContactSection() {
         <Reveal className="lg:col-span-5">
           <p className="eyebrow">Contact</p>
           <h2
-            className="section-title mt-4 text-balance text-frost lg:text-[clamp(1.9rem,2.8vw,2.6rem)]"
+            className="section-title mt-4 text-balance lg:text-[clamp(1.9rem,2.8vw,2.6rem)]"
             id="contact-heading"
           >
-            Need a booking flow, a website, or someone to own your
-            infrastructure?
+            <span className="gradient-text">
+              Need a booking flow, a website, or an AI system that just works?
+            </span>
           </h2>
           <p className="mt-5 max-w-md text-pretty leading-relaxed text-mist">
-            Tell me what the business does and where it's stuck. I'll reply with
-            how I'd approach it.
+            Tell me what the business does and where it's stuck. Pick a prompt
+            to start, or write your own.
           </p>
         </Reveal>
         <Reveal className="lg:col-span-7" delay={0.08}>
-          {enabled === null ? (
-            <div
-              aria-busy="true"
-              aria-label="Loading contact options"
-              className="glass min-h-72 animate-pulse"
-            />
-          ) : enabled ? (
-            <ContactForm />
-          ) : (
-            <DirectContact />
-          )}
+          <ContactTerminal enabled={enabled} />
         </Reveal>
       </div>
     </section>

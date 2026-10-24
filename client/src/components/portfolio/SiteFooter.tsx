@@ -8,7 +8,8 @@ export function SiteFooter() {
         <div className="flex items-center gap-3">
           <BrandMark className="h-7 w-7 text-frost" />
           <p className="font-mono text-xs text-mist">
-            © {new Date().getFullYear()} {profile.firstName} {profile.lastName}
+            © {new Date().getFullYear()} {profile.firstName} {profile.lastName}{" "}
+            {profile.familyName}
           </p>
         </div>
         <div className="flex items-center gap-5 font-mono text-xs">

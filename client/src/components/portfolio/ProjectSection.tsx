@@ -33,7 +33,7 @@ function ProjectCard({ project }: { project: PortfolioProject }) {
   return (
     <article
       aria-labelledby={`${project.id}-title`}
-      className="glass spotlight flex h-full flex-col p-6 sm:p-8"
+      className="glass neon-card flex h-full flex-col p-6 sm:p-8"
       onPointerMove={trackPointer}
     >
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
@@ -105,9 +105,13 @@ export function ProjectSection({ group }: { group: ProjectGroup }) {
   const headingId = `${group.id}-heading`;
 
   return (
-    <section aria-labelledby={headingId} className="pt-24 sm:pt-32">
+    <section
+      aria-labelledby={headingId}
+      className="scroll-mt-20 pt-24 sm:pt-32"
+      id={group.anchor}
+    >
       <SectionHeading
-        eyebrow={`${group.projects.length} projects`}
+        eyebrow={`${group.eyebrow} · ${group.projects.length}`}
         id={headingId}
         title={group.title}
       >

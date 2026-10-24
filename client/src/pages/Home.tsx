@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { ContactSection } from "@/components/portfolio/ContactSection";
 import { CredentialsSection } from "@/components/portfolio/CredentialsSection";
 import { CustomCursor } from "@/components/portfolio/CustomCursor";
@@ -7,6 +8,11 @@ import { ProjectSection } from "@/components/portfolio/ProjectSection";
 import { SiteFooter } from "@/components/portfolio/SiteFooter";
 import { SiteHeader } from "@/components/portfolio/SiteHeader";
 import { groups } from "@/data/portfolio";
+
+// anime.js and the 3D scene load after first paint.
+const NeuralExplodedView = lazy(
+  () => import("@/components/portfolio/NeuralExplodedView")
+);
 
 export default function Home() {
   return (
@@ -21,12 +27,17 @@ export default function Home() {
       <SiteHeader />
       <main className="relative z-10">
         <HeroSection />
+        <Suspense
+          fallback={
+            <div aria-hidden="true" className="h-[280vh] sm:h-[320vh]" />
+          }
+        >
+          <NeuralExplodedView />
+        </Suspense>
         <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
-          <div className="scroll-mt-20" id="work">
-            {groups.map(group => (
-              <ProjectSection group={group} key={group.id} />
-            ))}
-          </div>
+          {groups.map(group => (
+            <ProjectSection group={group} key={group.id} />
+          ))}
           <ExperienceSection />
           <CredentialsSection />
           <ContactSection />

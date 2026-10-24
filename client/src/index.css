@@ -1,18 +1,19 @@
 /*
- * Glacier on obsidian: a cool, near-black field with one icy teal for
- * interaction and a muted patina green reserved for status. Archivo's width
- * axis carries the personality; IBM Plex Mono carries the data.
+ * Neon obsidian: a deep blue-black field lit by two accents. Cyan marks
+ * interaction, violet carries depth and gradients, patina green is status only.
+ * Archivo's width axis carries the display type; IBM Plex Mono the data.
  */
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #080b0d;
-  --color-basalt: #0f1417;
-  --color-frost: #e6eef0;
-  --color-mist: #8b9ba3;
-  --color-glacier: #8fd3cb;
-  --color-patina: #6fb596;
-  --color-line: rgb(143 211 203 / 0.11);
+  --color-ink: #05070b;
+  --color-basalt: #0b0f17;
+  --color-frost: #e8f0f4;
+  --color-mist: #8a97a8;
+  --color-glacier: #40e0f0;
+  --color-violet: #a78bfa;
+  --color-patina: #5fd39a;
+  --color-line: rgb(120 200 255 / 0.12);
 
   --font-sans: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
   --font-mono:
@@ -40,7 +41,7 @@
   }
 
   ::selection {
-    background: rgb(143 211 203 / 0.3);
+    background: rgb(64 224 240 / 0.3);
     color: var(--color-frost);
   }
 
@@ -56,12 +57,17 @@
   }
 }
 
-/* ---------- Atmosphere: one cold light source, a faint grain, nothing else. */
+/* ---------- Atmosphere */
 .page-atmosphere {
   background:
     radial-gradient(
-      60rem 40rem at 100% -10%,
-      rgb(143 211 203 / 0.07),
+      70rem 45rem at 110% -10%,
+      rgb(167 139 250 / 0.1),
+      transparent 60%
+    ),
+    radial-gradient(
+      60rem 40rem at -10% 40%,
+      rgb(64 224 240 / 0.06),
       transparent 60%
     ),
     var(--color-ink);
@@ -77,6 +83,53 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Perspective grid that fades out toward the edges. */
+.hero-grid {
+  background-image:
+    linear-gradient(rgb(64 224 240 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(64 224 240 / 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 40%,
+    black 30%,
+    transparent 75%
+  );
+}
+
+.glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.glow-cyan {
+  background: rgb(64 224 240 / 0.22);
+}
+
+.glow-violet {
+  background: rgb(167 139 250 / 0.24);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glow {
+    animation: glow-drift 14s ease-in-out infinite alternate;
+  }
+
+  .glow-violet {
+    animation-delay: -7s;
+  }
+}
+
+@keyframes glow-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4%, 6%, 0) scale(1.12);
+  }
+}
+
 /* ---------- Type roles */
 .eyebrow {
   font-family: var(--font-mono);
@@ -87,24 +140,50 @@
   color: var(--color-mist);
 }
 
+.gradient-text {
+  background: linear-gradient(
+    100deg,
+    #f4f8fb 0%,
+    #9ff3fb 38%,
+    #40e0f0 58%,
+    #b9a2ff 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Both name lines share one size and weight; only the width axis animates. */
 .display-name {
-  font-size: clamp(3rem, 14.2vw, 13.5rem);
+  font-size: clamp(2.4rem, 10.5vw, 9.5rem);
   font-weight: 800;
   font-stretch: 125%;
-  letter-spacing: -0.02em;
-  line-height: 0.84;
+  letter-spacing: -0.015em;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 
-/* Signature: the name is pulled from condensed to fully expanded on load. */
+.family-name {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.6vw, 1.35rem);
+  font-weight: 500;
+  letter-spacing: 0.62em;
+  text-transform: uppercase;
+  color: var(--color-glacier);
+  text-shadow: 0 0 18px rgb(64 224 240 / 0.55);
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .display-name {
-    animation: name-stretch 1.25s var(--ease-out-quint) 0.1s both;
+  .name-line {
+    animation: name-stretch 1.25s var(--ease-out-quint) both;
   }
 
-  .name-rule {
-    transform-origin: left;
-    animation: rule-draw 1.1s var(--ease-out-quint) 0.45s both;
+  .name-line--2 {
+    animation-delay: 0.12s;
+  }
+
+  .family-name {
+    animation: family-in 1.1s var(--ease-out-quint) 0.55s both;
   }
 }
 
@@ -119,16 +198,18 @@
   }
   to {
     font-stretch: 125%;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.015em;
   }
 }
 
-@keyframes rule-draw {
+@keyframes family-in {
   from {
-    transform: scaleX(0);
+    letter-spacing: 1.4em;
+    opacity: 0;
   }
   to {
-    transform: scaleX(1);
+    letter-spacing: 0.62em;
+    opacity: 1;
   }
 }
 
@@ -153,47 +234,76 @@
   border-radius: 1.25rem;
   background: linear-gradient(
     160deg,
-    rgb(230 238 240 / 0.045),
-    rgb(230 238 240 / 0.012) 60%
+    rgb(140 200 255 / 0.06),
+    rgb(140 200 255 / 0.015) 60%
   );
   box-shadow:
-    inset 0 1px 0 rgb(230 238 240 / 0.06),
-    0 30px 60px -30px rgb(0 0 0 / 0.6);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+    inset 0 1px 0 rgb(232 240 244 / 0.07),
+    0 30px 60px -30px rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
-.spotlight {
+/* Glass card whose border lights up with a cyan-violet gradient on hover. */
+.neon-card {
   position: relative;
   isolation: isolate;
   overflow: hidden;
   transition:
-    border-color 240ms var(--ease-out-quint),
-    transform 240ms var(--ease-out-quint);
+    transform 260ms var(--ease-out-quint),
+    box-shadow 260ms var(--ease-out-quint);
 }
 
-.spotlight::after {
+.neon-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    #40e0f0,
+    transparent 40%,
+    transparent 60%,
+    #a78bfa
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 260ms var(--ease-out-quint);
+}
+
+.neon-card::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 240ms var(--ease-out-quint);
+  transition: opacity 260ms var(--ease-out-quint);
   background: radial-gradient(
     420px circle at var(--mx, 50%) var(--my, 50%),
-    rgb(143 211 203 / 0.09),
+    rgb(64 224 240 / 0.12),
     transparent 45%
   );
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .spotlight:hover {
-    border-color: rgb(143 211 203 / 0.28);
-    transform: translateY(-2px);
+  .neon-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 0 1px rgb(64 224 240 / 0.08),
+      0 24px 70px -20px rgb(64 224 240 / 0.25),
+      0 12px 40px -20px rgb(167 139 250 / 0.3);
   }
 
-  .spotlight:hover::after {
+  .neon-card:hover::before,
+  .neon-card:hover::after {
     opacity: 1;
   }
 }
@@ -201,14 +311,14 @@
 .chip {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgb(230 238 240 / 0.09);
+  border: 1px solid rgb(64 224 240 / 0.18);
   border-radius: 999px;
-  background: rgb(8 11 13 / 0.5);
+  background: rgb(64 224 240 / 0.06);
   padding: 0.38rem 0.65rem;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   line-height: 1;
-  color: #b9c6cb;
+  color: #bfeef4;
 }
 
 .status-dot {
@@ -218,6 +328,7 @@
   height: 0.45rem;
   border-radius: 999px;
   background: var(--color-patina);
+  box-shadow: 0 0 10px rgb(95 211 154 / 0.7);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -259,6 +370,7 @@
     transform 180ms var(--ease-out-quint),
     background-color 180ms var(--ease-out-quint),
     border-color 180ms var(--ease-out-quint),
+    box-shadow 180ms var(--ease-out-quint),
     color 180ms var(--ease-out-quint);
 }
 
@@ -266,23 +378,34 @@
   transform: scale(0.97);
 }
 
+.btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .btn-primary {
-  background: var(--color-frost);
-  color: var(--color-ink);
+  background: linear-gradient(100deg, #40e0f0, #a78bfa);
+  color: #05070b;
+  box-shadow: 0 0 0 0 rgb(64 224 240 / 0);
 }
 
 .btn-primary:hover {
-  background: var(--color-glacier);
+  box-shadow:
+    0 0 24px rgb(64 224 240 / 0.45),
+    0 0 48px rgb(167 139 250 / 0.25);
 }
 
 .btn-ghost {
-  border: 1px solid rgb(230 238 240 / 0.16);
+  border: 1px solid rgb(232 240 244 / 0.18);
+  background: rgb(11 15 23 / 0.5);
   color: var(--color-frost);
+  backdrop-filter: blur(8px);
 }
 
 .btn-ghost:hover {
-  border-color: rgb(143 211 203 / 0.5);
+  border-color: rgb(64 224 240 / 0.6);
   color: var(--color-glacier);
+  box-shadow: 0 0 20px rgb(64 224 240 / 0.18);
 }
 
 .btn .btn-arrow {
@@ -296,7 +419,7 @@
 .text-link {
   color: var(--color-frost);
   text-decoration: underline;
-  text-decoration-color: rgb(143 211 203 / 0.35);
+  text-decoration-color: rgb(64 224 240 / 0.4);
   text-underline-offset: 0.25em;
   transition:
     color 180ms var(--ease-out-quint),
@@ -308,36 +431,60 @@
   text-decoration-color: var(--color-glacier);
 }
 
-.field {
+/* ---------- Terminal (contact) */
+.terminal {
+  overflow: hidden;
+  border: 1px solid rgb(64 224 240 / 0.2);
+  border-radius: 1rem;
+  background: linear-gradient(180deg, rgb(11 15 23 / 0.92), rgb(5 7 11 / 0.95));
+  box-shadow:
+    0 0 0 1px rgb(167 139 250 / 0.06),
+    0 30px 80px -30px rgb(64 224 240 / 0.25);
+  font-family: var(--font-mono);
+}
+
+.term-input {
   width: 100%;
-  border: 1px solid rgb(230 238 240 / 0.12);
-  border-radius: 0.75rem;
-  background: rgb(8 11 13 / 0.6);
-  padding: 0.8rem 0.95rem;
+  border: 0;
+  border-bottom: 1px dashed rgb(64 224 240 / 0.25);
+  background: transparent;
+  padding: 0.45rem 0;
   color: var(--color-frost);
   font: inherit;
-  font-size: 0.95rem;
-  transition:
-    border-color 180ms var(--ease-out-quint),
-    background-color 180ms var(--ease-out-quint);
+  font-size: 0.9rem;
+  transition: border-color 180ms var(--ease-out-quint);
 }
 
-.field::placeholder {
-  color: #5f6d74;
+.term-input::placeholder {
+  color: #4f5d6d;
 }
 
-.field:hover {
-  border-color: rgb(230 238 240 / 0.22);
-}
-
-.field:focus {
+.term-input:focus {
   outline: none;
-  border-color: var(--color-glacier);
-  background: rgb(15 20 23 / 0.9);
+  border-bottom-color: var(--color-glacier);
+  border-bottom-style: solid;
 }
 
-.field[aria-invalid="true"] {
-  border-color: #e08a8a;
+.term-input[aria-invalid="true"] {
+  border-bottom-color: #f08a9a;
+}
+
+.caret::after {
+  content: "▋";
+  margin-left: 0.15em;
+  color: var(--color-glacier);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .caret::after {
+    animation: caret-blink 1s steps(1) infinite;
+  }
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 /* Honeypot: off-canvas rather than display:none so naive bots still fill it. */
@@ -347,6 +494,56 @@
   width: 1px;
   height: 1px;
   overflow: hidden;
+}
+
+/* ---------- Exploded neural network scene */
+.scene {
+  perspective: 1600px;
+  perspective-origin: 50% 40%;
+}
+
+.scene-world,
+.scene-layer {
+  transform-style: preserve-3d;
+}
+
+.scene-layer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  will-change: transform, opacity;
+}
+
+.layer-plate {
+  border: 1px solid rgb(64 224 240 / 0.35);
+  border-radius: 1.25rem;
+  background: linear-gradient(
+    150deg,
+    rgb(64 224 240 / 0.08),
+    rgb(167 139 250 / 0.06)
+  );
+  background-color: rgb(8 12 20 / 0.82);
+  box-shadow:
+    inset 0 0 40px rgb(64 224 240 / 0.08),
+    0 0 60px -10px rgb(64 224 240 / 0.25);
+}
+
+.layer-plate--violet {
+  border-color: rgb(167 139 250 / 0.4);
+  box-shadow:
+    inset 0 0 40px rgb(167 139 250 / 0.1),
+    0 0 60px -10px rgb(167 139 250 / 0.3);
+}
+
+.node-hit {
+  cursor: help;
+  transition: transform 160ms var(--ease-out-quint);
+}
+
+.node-hit:hover,
+.node-hit:focus-visible {
+  transform: scale(1.25);
+  outline: none;
 }
 
 /* ---------- Custom cursor (fine pointers only, enabled by CustomCursor). */

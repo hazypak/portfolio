@@ -2,10 +2,10 @@
 import { Github } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/portfolio/BrandMark";
-import { HoverTooltip } from "@/components/portfolio/HoverTooltip";
 import { profile } from "@/data/portfolio";
 
 const links = [
+  { href: "#system", label: "System" },
   { href: "#work", label: "Work" },
   { href: "#experience", label: "Experience" },
   { href: "#credentials", label: "Credentials" },
@@ -23,11 +23,11 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b transition-[background-color,border-color] duration-300 ${scrolled ? "border-line bg-ink/75 backdrop-blur-xl" : "border-transparent"}`}
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-[background-color,border-color] duration-300 ${scrolled ? "border-line bg-ink/70 backdrop-blur-xl" : "border-transparent"}`}
     >
       <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
         <a
-          aria-label="Muhammad Hazqeel, back to top"
+          aria-label="Muhammad Hazqeel Abdullah, back to top"
           className="flex items-center gap-2.5 rounded-md"
           href="#top"
         >
@@ -38,26 +38,16 @@ export function SiteHeader() {
         <nav aria-label="Sections" className="flex items-center gap-1 sm:gap-2">
           {links.map(link => (
             <a
-              className="hidden rounded-md px-3 py-2 text-sm text-mist transition-colors hover:text-frost md:inline-flex"
+              className="hidden rounded-md px-3 py-2 text-sm text-mist transition-colors hover:text-glacier md:inline-flex"
               href={link.href}
               key={link.href}
             >
               {link.label}
             </a>
           ))}
-          <HoverTooltip content="I run an agency too!">
-            <a
-              className="hidden rounded-md px-3 py-2 text-sm text-mist transition-colors hover:text-frost sm:inline-flex"
-              href={profile.studio}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              Studio
-            </a>
-          </HoverTooltip>
           <a
             aria-label="GitHub profile"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-mist transition-colors hover:text-frost"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-mist transition-colors hover:text-glacier"
             href={profile.github}
             rel="noopener noreferrer"
             target="_blank"
@@ -65,7 +55,7 @@ export function SiteHeader() {
             <Github aria-hidden="true" size={17} strokeWidth={1.8} />
           </a>
           <a
-            className="ml-1 inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-2 font-mono text-[0.72rem] text-frost transition-colors hover:border-glacier/50"
+            className="ml-1 inline-flex items-center gap-2 rounded-full border border-glacier/30 bg-glacier/5 px-3.5 py-2 font-mono text-[0.72rem] text-frost transition-[border-color,box-shadow] hover:border-glacier/70 hover:shadow-[0_0_18px_rgba(64,224,240,0.3)]"
             href="#contact"
           >
             <span aria-hidden="true" className="status-dot" />
