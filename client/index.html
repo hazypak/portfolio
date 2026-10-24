@@ -1,26 +1,28 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="booting">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#080b0d" />
+    <meta name="theme-color" content="#05070b" />
     <meta name="color-scheme" content="dark" />
-    <title>Muhammad Hazqeel · Full-stack developer & solutions architect</title>
+    <title>
+      Muhammad Hazqeel Abdullah · Full-stack developer & AI systems builder
+    </title>
     <meta
       name="description"
-      content="Muhammad Hazqeel builds booking portals, CRMs and web infrastructure for businesses in the UAE, plus products and game server systems."
+      content="Muhammad Hazqeel Abdullah builds booking portals, CRMs, web infrastructure and AI systems for businesses in the UAE."
     />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://hazqeel.vercel.app/" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Muhammad Hazqeel" />
+    <meta property="og:site_name" content="Muhammad Hazqeel Abdullah" />
     <meta
       property="og:title"
-      content="Muhammad Hazqeel · Full-stack developer & solutions architect"
+      content="Muhammad Hazqeel Abdullah · Full-stack developer & AI systems builder"
     />
     <meta
       property="og:description"
-      content="Booking portals, CRMs and web infrastructure that small businesses run on."
+      content="Booking portals, CRMs, web infrastructure and AI systems that businesses run on."
     />
     <meta property="og:url" content="https://hazqeel.vercel.app/" />
     <meta
@@ -31,16 +33,16 @@
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="Muhammad Hazqeel, full-stack developer and solutions architect"
+      content="Muhammad Hazqeel Abdullah, full-stack developer and AI systems builder"
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="Muhammad Hazqeel · Full-stack developer & solutions architect"
+      content="Muhammad Hazqeel Abdullah · Full-stack developer & AI systems builder"
     />
     <meta
       name="twitter:description"
-      content="Booking portals, CRMs and web infrastructure that small businesses run on."
+      content="Booking portals, CRMs, web infrastructure and AI systems that businesses run on."
     />
     <meta
       name="twitter:image"
@@ -50,15 +52,130 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+    <!--
+      Boot screen: painted with the first byte so there is never an unstyled
+      frame. main.tsx removes it once React has mounted and fonts are ready.
+    -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #05070b;
+      }
+      html.booting body {
+        overflow: hidden;
+      }
+      #root {
+        opacity: 0;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      html.ready #root {
+        opacity: 1;
+      }
+      #boot {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(
+            40rem 30rem at 50% 40%,
+            rgba(64, 224, 240, 0.08),
+            transparent 70%
+          ),
+          #05070b;
+        color: #8a97a8;
+        font:
+          13px/1.9 "IBM Plex Mono",
+          ui-monospace,
+          Consolas,
+          monospace;
+        transition:
+          opacity 0.45s ease,
+          visibility 0.45s;
+      }
+      html.ready #boot {
+        opacity: 0;
+        visibility: hidden;
+      }
+      #boot .term {
+        width: min(26rem, 84vw);
+        opacity: 0;
+        animation: boot-in 0.3s ease 0.15s forwards;
+      }
+      #boot .line {
+        white-space: nowrap;
+        overflow: hidden;
+        width: 0;
+        animation: boot-type 0.5s steps(28, end) forwards;
+      }
+      #boot .line:nth-child(2) {
+        animation-delay: 0.35s;
+      }
+      #boot .line:nth-child(3) {
+        animation-delay: 0.7s;
+      }
+      #boot .ok {
+        color: #40e0f0;
+      }
+      #boot .prompt {
+        color: #e8f0f4;
+      }
+      #boot .bar {
+        margin-top: 14px;
+        height: 2px;
+        overflow: hidden;
+        background: rgba(232, 240, 244, 0.08);
+      }
+      #boot .bar::after {
+        content: "";
+        display: block;
+        height: 100%;
+        width: 40%;
+        background: linear-gradient(90deg, #40e0f0, #a78bfa);
+        animation: boot-scan 1.1s ease-in-out infinite;
+      }
+      @keyframes boot-in {
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes boot-type {
+        to {
+          width: 100%;
+        }
+      }
+      @keyframes boot-scan {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(250%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #boot .term,
+        #boot .line {
+          animation: none;
+          opacity: 1;
+          width: auto;
+        }
+        #boot .bar::after {
+          animation: none;
+          width: 100%;
+        }
+      }
+    </style>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
-        "name": "Muhammad Hazqeel",
-        "jobTitle": "Full-stack developer & solutions architect",
+        "name": "Muhammad Hazqeel Abdullah",
+        "jobTitle": "Full-stack developer & AI systems builder",
         "url": "https://hazqeel.vercel.app/",
         "address": { "@type": "PostalAddress", "addressCountry": "AE" },
         "sameAs": ["https://github.com/hazypak"]
@@ -66,46 +183,44 @@
     </script>
   </head>
   <body>
-    <div id="root">
-      <!-- Crawler- and no-JS-readable fallback; React replaces it on load. -->
+    <div id="boot" aria-hidden="true">
+      <div class="term">
+        <div class="line">
+          <span class="prompt">hazqeel@lab:~$</span> boot portfolio
+        </div>
+        <div class="line">
+          › loading interface ........ <span class="ok">ok</span>
+        </div>
+        <div class="line">
+          › linking neural modules ... <span class="ok">ok</span>
+        </div>
+        <div class="bar"></div>
+      </div>
+    </div>
+    <div id="root"></div>
+    <noscript>
+      <style>
+        #boot {
+          display: none;
+        }
+        #root {
+          opacity: 1;
+        }
+      </style>
       <main
-        style="
-          background: #080b0d;
-          color: #e6eef0;
-          min-height: 100vh;
-          padding: 48px;
-          font-family: Arial, sans-serif;
-        "
+        style="color: #e8f0f4; padding: 48px; font-family: Arial, sans-serif"
       >
-        <p
-          style="
-            color: #8b9ba3;
-            font-size: 12px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-          "
-        >
-          Full-stack developer &amp; solutions architect · United Arab Emirates
-        </p>
-        <h1
-          style="
-            font-size: clamp(48px, 10vw, 120px);
-            line-height: 0.9;
-            margin: 24px 0;
-          "
-        >
-          Muhammad Hazqeel
-        </h1>
-        <p style="max-width: 640px; font-size: 18px; line-height: 1.6">
-          I build the booking portals, CRMs and web infrastructure that small
-          businesses run on, including Shabab Al Khor Mobility Car Wash and
-          Virgo Lubes.
+        <h1>Muhammad Hazqeel Abdullah</h1>
+        <p>
+          Full-stack developer &amp; AI systems builder in the United Arab
+          Emirates. I build booking portals, CRMs and web infrastructure,
+          including Shabab Al Khor Mobility Car Wash and Virgo Lubes.
         </p>
         <p>
-          <a href="https://github.com/hazypak" style="color: #8fd3cb">GitHub</a>
+          <a href="https://github.com/hazypak" style="color: #40e0f0">GitHub</a>
         </p>
       </main>
-    </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
