@@ -19,14 +19,20 @@ export function BrandMark({ className = "", title }: BrandMarkProps) {
         <path d="M28 104V68a36 36 0 0 1 72 0v36" strokeWidth="8" />
         <path
           d="M40 104V68a24 24 0 0 1 48 0v36"
-          stroke="#8FD3CB"
+          style={{ stroke: "var(--color-glacier)" }}
           strokeWidth="6"
         />
         <path
           d="M64 44V16M53 47 35 29M44 57 20 57M75 47 93 29M84 57 108 57M47 48 31 20M81 48 97 20"
           strokeWidth="6"
         />
-        <circle cx="64" cy="48" fill="#080B0D" r="12" strokeWidth="7" />
+        <circle
+          cx="64"
+          cy="48"
+          style={{ fill: "var(--color-ink)" }}
+          r="12"
+          strokeWidth="7"
+        />
         {[
           [64, 12],
           [31, 27],
@@ -39,7 +45,7 @@ export function BrandMark({ className = "", title }: BrandMarkProps) {
           <circle
             cx={cx}
             cy={cy}
-            fill="#8FD3CB"
+            style={{ fill: "var(--color-glacier)" }}
             key={`${cx}-${cy}`}
             r="5"
             strokeWidth="5"

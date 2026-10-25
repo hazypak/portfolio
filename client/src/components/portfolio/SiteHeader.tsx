@@ -2,6 +2,7 @@
 import { Github } from "lucide-react";
 import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/portfolio/BrandMark";
+import { ThemeToggle } from "@/components/portfolio/ThemeToggle";
 import { profile } from "@/data/portfolio";
 
 const links = [
@@ -45,6 +46,7 @@ export function SiteHeader() {
               {link.label}
             </a>
           ))}
+          <ThemeToggle />
           <a
             aria-label="GitHub profile"
             className="inline-flex h-9 w-9 items-center justify-center rounded-full text-mist transition-colors hover:text-glacier"

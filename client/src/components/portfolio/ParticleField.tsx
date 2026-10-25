@@ -60,7 +60,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
           const b = nodes[j];
           const d = Math.hypot(a.x - b.x, a.y - b.y);
           if (d < LINK_DISTANCE) {
-            ctx!.strokeStyle = `rgba(64, 224, 240, ${0.16 * (1 - d / LINK_DISTANCE)})`;
+            ctx!.strokeStyle = `rgb(${colorA} / ${0.16 * (1 - d / LINK_DISTANCE)})`;
             ctx!.lineWidth = 1;
             ctx!.beginPath();
             ctx!.moveTo(a.x, a.y);
@@ -70,8 +70,8 @@ export function ParticleField({ className = "" }: { className?: string }) {
         }
         const near = Math.hypot(a.x - pointer.x, a.y - pointer.y) < 160;
         ctx!.fillStyle = a.violet
-          ? "rgba(167, 139, 250, 0.9)"
-          : "rgba(64, 224, 240, 0.85)";
+          ? `rgb(${colorB} / 0.9)`
+          : `rgb(${colorA} / 0.85)`;
         ctx!.shadowColor = ctx!.fillStyle;
         ctx!.shadowBlur = near ? 14 : 6;
         ctx!.beginPath();
@@ -124,6 +124,18 @@ export function ParticleField({ className = "" }: { className?: string }) {
       pointer.y = -9999;
     };
 
+    // Node colours come from CSS (--particle-a/b) so they follow the theme.
+    let colorA = "64 224 240";
+    let colorB = "167 139 250";
+    const readColors = () => {
+      const style = getComputedStyle(document.documentElement);
+      colorA = style.getPropertyValue("--particle-a").trim() || colorA;
+      colorB = style.getPropertyValue("--particle-b").trim() || colorB;
+      draw();
+    };
+    readColors();
+    window.addEventListener("themechange", readColors);
+
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
       start();
@@ -144,6 +156,7 @@ export function ParticleField({ className = "" }: { className?: string }) {
 
     return () => {
       cancelAnimationFrame(frame);
+      window.removeEventListener("themechange", readColors);
       observer.disconnect();
       resizeObserver.disconnect();
       window.removeEventListener("pointermove", onPointer);

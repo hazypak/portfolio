@@ -271,7 +271,7 @@ export default function NeuralExplodedView() {
   return (
     <section
       aria-labelledby="system-heading"
-      className="relative h-[280vh] sm:h-[320vh]"
+      className="theme-dark-scope relative h-[280vh] bg-ink sm:h-[320vh]"
       id="system"
       ref={sectionRef}
     >

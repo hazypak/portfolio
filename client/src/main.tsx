@@ -1,3 +1,7 @@
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
@@ -5,9 +9,9 @@ import "./index.css";
 createRoot(document.getElementById("root")!).render(<App />);
 
 /**
- * Reveal the app only once React has painted and the web fonts are in, so
+ * Reveal the app only once React has painted and the fonts are in, so
  * visitors never see fallback fonts or unstyled markup. Capped so a slow
- * font CDN can't hold the page hostage.
+ * connection can't hold the page hostage.
  */
 const FONT_WAIT_CAP_MS = 1800;
 
@@ -25,8 +29,8 @@ function reveal() {
 // fonts.ready alone can resolve before any load starts, so request the faces
 // the first screen uses explicitly.
 const fontsLoaded = Promise.all([
-  document.fonts.load('800 1em "Archivo"'),
-  document.fonts.load('400 1em "Archivo"'),
+  document.fonts.load('800 1em "Archivo Variable"'),
+  document.fonts.load('400 1em "Archivo Variable"'),
   document.fonts.load('400 1em "IBM Plex Mono"'),
 ]).catch(() => undefined);
 

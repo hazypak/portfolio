@@ -49,12 +49,7 @@
       content="https://hazqeel.vercel.app/og-image.png"
     />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <script src="/theme-init.js"></script>
     <!--
       Boot screen: painted with the first byte so there is never an unstyled
       frame. main.tsx removes it once React has mounted and fonts are ready.
@@ -101,6 +96,26 @@
       html.ready #boot {
         opacity: 0;
         visibility: hidden;
+      }
+      html[data-theme="light"],
+      html[data-theme="light"] body {
+        background: #eef2f7;
+      }
+      html[data-theme="light"] #boot {
+        background:
+          radial-gradient(
+            40rem 30rem at 50% 40%,
+            rgba(14, 116, 144, 0.08),
+            transparent 70%
+          ),
+          #eef2f7;
+        color: #4b5a6b;
+      }
+      html[data-theme="light"] #boot .ok {
+        color: #0e7490;
+      }
+      html[data-theme="light"] #boot .prompt {
+        color: #0b1220;
       }
       #boot .term {
         width: min(26rem, 84vw);

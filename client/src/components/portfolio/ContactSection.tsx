@@ -180,7 +180,7 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
             : "bg-mist";
 
   return (
-    <div className="terminal">
+    <div className="terminal theme-dark-scope">
       <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div aria-hidden="true" className="flex gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full bg-[#f08a9a]/70" />
