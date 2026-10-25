@@ -74,12 +74,16 @@ export function FaceSvg() {
     >
       <defs>
         <radialGradient cx="50%" cy="45%" id="face-glow" r="55%">
-          <stop offset="0" stopColor="#40e0f0" stopOpacity="0.18" />
-          <stop offset="1" stopColor="#40e0f0" stopOpacity="0" />
+          <stop
+            offset="0"
+            stopColor="var(--color-glacier)"
+            stopOpacity="0.18"
+          />
+          <stop offset="1" stopColor="var(--color-glacier)" stopOpacity="0" />
         </radialGradient>
       </defs>
       <ellipse cx="180" cy="185" fill="url(#face-glow)" rx="140" ry="170" />
-      <g stroke="#40e0f0" strokeOpacity="0.28" strokeWidth="0.8">
+      <g stroke="var(--color-glacier)" strokeOpacity="0.28" strokeWidth="0.8">
         {faceEdges.map(([a, b]) => (
           <line
             key={`${a[0]},${a[1]}-${b[0]},${b[1]}`}
@@ -90,13 +94,13 @@ export function FaceSvg() {
           />
         ))}
       </g>
-      <g fill="#9ff3fb">
+      <g fill="var(--nn-cyan-soft)">
         {facePoints.map(([x, y]) => (
           <circle className="lm-dot" cx={x} cy={y} key={`${x},${y}`} r="2.2" />
         ))}
       </g>
       <text
-        fill="#8a97a8"
+        fill="var(--color-mist)"
         fontFamily="IBM Plex Mono, monospace"
         fontSize="10"
         letterSpacing="2"
@@ -131,7 +135,7 @@ export function MatrixSvg() {
       width={PLATE}
     >
       <text
-        fill="#c4b5fd"
+        fill="var(--nn-violet-soft)"
         fontFamily="IBM Plex Mono, monospace"
         fontSize="10"
         letterSpacing="2"
@@ -142,7 +146,7 @@ export function MatrixSvg() {
       </text>
       {attention.map((v, k) => (
         <rect
-          fill={v > 0.6 ? "#40e0f0" : "#a78bfa"}
+          fill={v > 0.6 ? "var(--color-glacier)" : "var(--color-violet)"}
           fillOpacity={v}
           height={cell - 3}
           key={k}
@@ -155,18 +159,18 @@ export function MatrixSvg() {
       {(["Q", "K", "V"] as const).map((label, i) => (
         <g key={label}>
           <rect
-            fill="#a78bfa"
+            fill="var(--color-violet)"
             fillOpacity="0.12"
             height="40"
             rx="6"
-            stroke="#a78bfa"
+            stroke="var(--color-violet)"
             strokeOpacity="0.6"
             width="76"
             x="252"
             y={62 + i * 58}
           />
           <text
-            fill="#e8f0f4"
+            fill="var(--color-frost)"
             fontFamily="IBM Plex Mono, monospace"
             fontSize="13"
             textAnchor="middle"
@@ -178,7 +182,7 @@ export function MatrixSvg() {
           <path
             d={`M252 ${82 + i * 58} C 236 ${82 + i * 58}, 236 ${150}, 222 150`}
             fill="none"
-            stroke="#40e0f0"
+            stroke="var(--color-glacier)"
             strokeDasharray="3 4"
             strokeOpacity="0.55"
           />
@@ -196,23 +200,23 @@ export function MatrixSvg() {
         ].map(([label, x]) => (
           <g key={label}>
             <rect
-              fill="#05070b"
+              fill="var(--color-ink)"
               height="30"
               rx="15"
-              stroke="#40e0f0"
+              stroke="var(--color-glacier)"
               strokeOpacity="0.5"
               width="84"
               x={Number(x) - 42}
               y="297"
             />
-            <text fill="#9ff3fb" x={x} y="316">
+            <text fill="var(--nn-cyan-soft)" x={x} y="316">
               {label}
             </text>
           </g>
         ))}
         <path
           d="M116 312 H138 M222 312 H244"
-          stroke="#40e0f0"
+          stroke="var(--color-glacier)"
           strokeOpacity="0.7"
         />
       </g>
@@ -239,7 +243,7 @@ export function ComputeSvg() {
       viewBox={`0 0 ${PLATE} ${PLATE}`}
       width={PLATE}
     >
-      <g stroke="#40e0f0" strokeOpacity="0.4">
+      <g stroke="var(--color-glacier)" strokeOpacity="0.4">
         {tileCenters.map(([x, y]) => (
           <path
             d={`M180 180 L${x} ${y}`}
@@ -251,14 +255,20 @@ export function ComputeSvg() {
       <circle
         cx="180"
         cy="180"
-        fill="#05070b"
+        fill="var(--color-ink)"
         r="34"
-        stroke="#40e0f0"
+        stroke="var(--color-glacier)"
         strokeWidth="1.5"
       />
-      <circle cx="180" cy="180" fill="#40e0f0" fillOpacity="0.15" r="22" />
+      <circle
+        cx="180"
+        cy="180"
+        fill="var(--color-glacier)"
+        fillOpacity="0.15"
+        r="22"
+      />
       <text
-        fill="#e8f0f4"
+        fill="var(--color-frost)"
         fontFamily="IBM Plex Mono, monospace"
         fontSize="9"
         textAnchor="middle"
@@ -270,11 +280,11 @@ export function ComputeSvg() {
       <polyline
         fill="none"
         points={sparkline}
-        stroke="#5fd39a"
+        stroke="var(--color-patina)"
         strokeWidth="1.5"
       />
       <text
-        fill="#8a97a8"
+        fill="var(--color-mist)"
         fontFamily="IBM Plex Mono, monospace"
         fontSize="9"
         x="120"
@@ -290,17 +300,17 @@ export function TileChip({ index }: { index: number }) {
   return (
     <svg aria-hidden="true" height="80" viewBox="0 0 80 80" width="80">
       <rect
-        fill="#0b0f17"
+        fill="var(--color-basalt)"
         height="56"
         rx="8"
-        stroke="#a78bfa"
+        stroke="var(--color-violet)"
         strokeOpacity="0.8"
         width="56"
         x="12"
         y="12"
       />
       <rect
-        fill="#a78bfa"
+        fill="var(--color-violet)"
         fillOpacity="0.18"
         height="28"
         rx="4"
@@ -308,13 +318,13 @@ export function TileChip({ index }: { index: number }) {
         x="26"
         y="26"
       />
-      <g stroke="#a78bfa" strokeOpacity="0.6">
+      <g stroke="var(--color-violet)" strokeOpacity="0.6">
         {[22, 34, 46, 58].map(p => (
           <path d={`M${p} 4V12M${p} 68V76M4 ${p}H12M68 ${p}H76`} key={p} />
         ))}
       </g>
       <text
-        fill="#e8f0f4"
+        fill="var(--color-frost)"
         fontFamily="IBM Plex Mono, monospace"
         fontSize="9"
         textAnchor="middle"

@@ -271,7 +271,7 @@ export default function NeuralExplodedView() {
   return (
     <section
       aria-labelledby="system-heading"
-      className="theme-dark-scope relative h-[280vh] bg-ink sm:h-[320vh]"
+      className="relative h-[280vh] bg-ink sm:h-[320vh]"
       id="system"
       ref={sectionRef}
     >
@@ -417,7 +417,7 @@ export default function NeuralExplodedView() {
           <label className="flex min-w-[10rem] flex-1 items-center gap-3">
             <span className="sr-only">Disassembly progress</span>
             <input
-              className="w-full accent-[#40e0f0]"
+              className="w-full accent-glacier"
               defaultValue={0}
               max={100}
               min={0}

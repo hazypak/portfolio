@@ -161,7 +161,7 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
   const fieldError = (name: keyof FieldErrors) =>
     errors[name] ? (
       <p
-        className="mt-1 text-[0.72rem] text-[#f08a9a]"
+        className="mt-1 text-[0.72rem] text-danger"
         id={`contact-${name}-error`}
       >
         ! {errors[name]}
@@ -170,7 +170,7 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
 
   const dotTone =
     phase === "error"
-      ? "bg-[#f08a9a]"
+      ? "bg-danger"
       : phase === "sent"
         ? "bg-patina"
         : busy
@@ -180,11 +180,11 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
             : "bg-mist";
 
   return (
-    <div className="terminal theme-dark-scope">
+    <div className="terminal">
       <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
         <div aria-hidden="true" className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-[#f08a9a]/70" />
-          <span className="h-2.5 w-2.5 rounded-full bg-[#f5d27a]/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-danger/70" />
+          <span className="h-2.5 w-2.5 rounded-full bg-amber/70" />
           <span className="h-2.5 w-2.5 rounded-full bg-patina/70" />
         </div>
         <p className="truncate text-[0.72rem] text-mist">
@@ -237,7 +237,7 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
           <div className="mt-2 flex flex-wrap gap-2">
             {prompts.map(p => (
               <button
-                className="rounded-md border border-violet/30 bg-violet/5 px-2.5 py-1 text-[0.72rem] text-[#d4c8ff] transition-[border-color,box-shadow] hover:border-violet hover:shadow-[0_0_14px_rgba(167,139,250,0.35)] disabled:opacity-50"
+                className="rounded-md border border-violet/30 bg-violet/5 px-2.5 py-1 text-[0.72rem] text-lilac transition-[border-color,box-shadow] hover:border-violet hover:shadow-[0_0_14px_rgba(167,139,250,0.35)] disabled:opacity-50"
                 disabled={!online || busy}
                 key={p.id}
                 onClick={() => applyPrompt(p.text)}
@@ -251,7 +251,7 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
 
         {enabled === false ? (
           <p className="text-mist">
-            <span className="text-[#f5d27a]">!</span> messaging is offline right
+            <span className="text-amber">!</span> messaging is offline right
             now. Copy the email above, or reach me on{" "}
             <a
               className="text-link"
@@ -370,7 +370,7 @@ function ContactTerminal({ enabled }: { enabled: boolean | null }) {
                   line.tone === "ok"
                     ? "text-patina"
                     : line.tone === "err"
-                      ? "text-[#f08a9a]"
+                      ? "text-danger"
                       : "text-glacier"
                 }
                 key={`${i}-${line.text}`}

@@ -14,6 +14,9 @@
   --color-violet: #a78bfa;
   --color-patina: #5fd39a;
   --color-line: rgb(120 200 255 / 0.12);
+  --color-danger: #f08a9a;
+  --color-amber: #f5d27a;
+  --color-lilac: #d4c8ff;
 
   --font-sans:
     "Archivo Variable", "Helvetica Neue", Arial, system-ui, sans-serif;
@@ -36,28 +39,22 @@
   --color-violet: #6d28d9;
   --color-patina: #15803d;
   --color-line: rgb(15 50 90 / 0.14);
+  --color-danger: #be123c;
+  --color-amber: #b45309;
+  --color-lilac: #5b21b6;
   --particle-a: 14 116 144;
   --particle-b: 109 40 217;
+  --nn-cyan-soft: #0891b2;
+  --nn-violet-soft: #7c3aed;
   color-scheme: light;
-}
-
-/* Instrument panels (exploded view, terminal) stay dark in both themes. */
-.theme-dark-scope {
-  --color-ink: #05070b;
-  --color-basalt: #0b0f17;
-  --color-frost: #e8f0f4;
-  --color-mist: #8a97a8;
-  --color-glacier: #40e0f0;
-  --color-violet: #a78bfa;
-  --color-patina: #5fd39a;
-  --color-line: rgb(120 200 255 / 0.12);
-  color-scheme: dark;
-  color: var(--color-frost);
 }
 
 :root {
   --particle-a: 64 224 240;
   --particle-b: 167 139 250;
+  /* Highlight tints used inside the exploded-view SVGs. */
+  --nn-cyan-soft: #9ff3fb;
+  --nn-violet-soft: #c4b5fd;
 }
 
 /* Theme switch: a circle grows from the toggle (driven from theme.ts). */
@@ -511,7 +508,7 @@
 }
 
 .term-input[aria-invalid="true"] {
-  border-bottom-color: #f08a9a;
+  border-bottom-color: var(--color-danger);
 }
 
 .caret::after {
@@ -757,6 +754,48 @@
   background-image:
     linear-gradient(rgb(14 116 144 / 0.09) 1px, transparent 1px),
     linear-gradient(90deg, rgb(14 116 144 / 0.09) 1px, transparent 1px);
+}
+
+/* Exploded view plates: frosted glass instead of smoked glass. */
+[data-theme="light"] .layer-plate {
+  border-color: rgb(14 116 144 / 0.35);
+  background: linear-gradient(
+    150deg,
+    rgb(14 116 144 / 0.06),
+    rgb(109 40 217 / 0.05)
+  );
+  background-color: rgb(255 255 255 / 0.88);
+  box-shadow:
+    inset 0 0 40px rgb(14 116 144 / 0.06),
+    0 24px 60px -24px rgb(14 116 144 / 0.35);
+}
+
+[data-theme="light"] .layer-plate--violet {
+  border-color: rgb(109 40 217 / 0.35);
+  box-shadow:
+    inset 0 0 40px rgb(109 40 217 / 0.06),
+    0 24px 60px -24px rgb(109 40 217 / 0.3);
+}
+
+/* Contact terminal: a light console with the same cyan wiring. */
+[data-theme="light"] .terminal {
+  border-color: rgb(14 116 144 / 0.25);
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.95),
+    rgb(244 247 251 / 0.95)
+  );
+  box-shadow:
+    0 0 0 1px rgb(109 40 217 / 0.05),
+    0 30px 70px -30px rgb(14 116 144 / 0.35);
+}
+
+[data-theme="light"] .term-input {
+  border-bottom-color: rgb(14 116 144 / 0.3);
+}
+
+[data-theme="light"] .term-input::placeholder {
+  color: #8593a3;
 }
 
 /* ---------- Custom cursor (fine pointers only, enabled by CustomCursor). */
