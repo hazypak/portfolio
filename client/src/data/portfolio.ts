@@ -233,6 +233,22 @@ export const credentials = {
   certificationNote: "Earned through Oracle's Race to AI programme.",
 } as const;
 
+/** Transcribed from the issued eCertificate in /certificates. */
+export const oracleCertificate = {
+  badge: "Oracle Certified Foundations Associate",
+  title: "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
+  issuer: "Oracle University",
+  holder: "Muhammad Hazqeel Abdullah",
+  issued: "2025-10-29",
+  validUntil: "2027-10-29",
+  credentialId: "323400890OCI25AICFA",
+  image: "/certificates/oracle-oci-ai-foundations-2025.webp",
+  imageSmall: "/certificates/oracle-oci-ai-foundations-2025-900.webp",
+  imageWidth: 1800,
+  imageHeight: 1265,
+  pdf: "/certificates/oracle-oci-ai-foundations-2025.pdf",
+} as const;
+
 export const projectCount = groups.reduce(
   (total, group) => total + group.projects.length,
   0

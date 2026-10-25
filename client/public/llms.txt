@@ -14,5 +14,9 @@
 - Minecraft (Java, Spigot/Paper plugins, Nodes SMP network) and Roblox (Lua) development.
 - Local multi-agent workflows with Ollama; scheduled content and order-processing pipelines.
 
+## Credentials
+- Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate (Oracle Certified Foundations Associate), issued by Oracle University on 29 October 2025, valid until 29 October 2027. Credential ID 323400890OCI25AICFA. Certificate: https://hazqeel.vercel.app/certificates/oracle-oci-ai-foundations-2025.pdf
+- A-Level STEM: Mathematics, Physics, Chemistry. Aiming for a B.Sc. in Artificial Intelligence at MBZUAI.
+
 ## Links
 - GitHub: https://github.com/hazypak
