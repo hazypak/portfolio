@@ -6,6 +6,10 @@
   strict CSP (`script-src 'self'`, no inline or third-party scripts, `connect-src 'self'`),
   HSTS with preload, `X-Frame-Options: DENY`, `nosniff`, `strict-origin-when-cross-origin`
   referrer policy, a deny-by-default `Permissions-Policy`, and same-origin COOP/CORP.
+  Fonts are self-hosted (`font-src 'self'`), so no third-party origin is contacted on load.
+  The theme is applied before paint by the external `/theme-init.js`, keeping the CSP free
+  of inline scripts; the toggle's sound is synthesised locally with the Web Audio API.
+- Vulnerability reports: see `/.well-known/security.txt`.
 - **One function**, `api/contact.ts`:
   - rejects cross-origin requests (allowlist: production domain, the deployment's own
     Vercel URLs, `ALLOWED_ORIGINS`; localhost outside production)
