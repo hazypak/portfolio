@@ -52,7 +52,7 @@
       "headers": [
         {
           "key": "Content-Disposition",
-          "value": "attachment; filename=\"Hazqeel-Oracle-OCI-AI-Foundations-2025.pdf\""
+          "value": "attachment"
         }
       ]
     },

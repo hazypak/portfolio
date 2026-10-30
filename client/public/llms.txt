@@ -16,6 +16,7 @@
 
 ## Credentials
 - Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate (Oracle Certified Foundations Associate), issued by Oracle University on 29 October 2025, valid until 29 October 2027. Credential ID 323400890OCI25AICFA. Certificate: https://hazqeel.vercel.app/certificates/oracle-oci-ai-foundations-2025.pdf
+- One Million Prompters: certificate of completion from the Dubai Future Foundation and Dubai Centre for Artificial Intelligence for the initiative training one million people in prompt engineering for AI systems. Certificate: https://hazqeel.vercel.app/certificates/one-million-prompters.pdf
 - A-Level STEM: Mathematics, Physics, Chemistry. Aiming for a B.Sc. in Artificial Intelligence at MBZUAI.
 
 ## Links

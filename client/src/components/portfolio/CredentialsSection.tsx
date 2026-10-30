@@ -1,6 +1,7 @@
 /**
- * Credentials: the Oracle eCertificate is the centrepiece, shown as the real
- * document with its verifiable details beside it; education sits below.
+ * Credentials: each certificate is shown as the real document with its
+ * details beside it, alternating sides on wide screens; education sits below.
+ * Rows only appear for what the certificate itself prints (dates, IDs).
  */
 import {
   Award,
@@ -14,7 +15,7 @@ import {
 import { useState } from "react";
 import { Reveal } from "@/components/portfolio/Reveal";
 import { SectionHeading } from "@/components/portfolio/SectionHeading";
-import { credentials, oracleCertificate as cert } from "@/data/portfolio";
+import { type Certificate, certificates, credentials } from "@/data/portfolio";
 
 const dateFormat = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
@@ -27,12 +28,12 @@ function formatDate(iso: string) {
   return dateFormat.format(new Date(`${iso}T00:00:00Z`));
 }
 
-function CredentialId() {
+function CredentialId({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {
     try {
-      await navigator.clipboard.writeText(cert.credentialId);
+      await navigator.clipboard.writeText(value);
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -43,7 +44,7 @@ function CredentialId() {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <code className="select-all rounded-md border border-line bg-basalt/60 px-2 py-1 font-mono text-[0.78rem] text-frost">
-        {cert.credentialId}
+        {value}
       </code>
       <button
         aria-label={copied ? "Credential ID copied" : "Copy credential ID"}
@@ -61,29 +62,52 @@ function CredentialId() {
   );
 }
 
-function CertificateShowcase() {
-  const valid = Date.now() < new Date(`${cert.validUntil}T23:59:59Z`).getTime();
-  const details = [
+function ValidityBadge({ validUntil }: { validUntil: string }) {
+  const valid = Date.now() < new Date(`${validUntil}T23:59:59Z`).getTime();
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 font-mono text-[0.7rem] ${valid ? "text-patina" : "text-mist"}`}
+    >
+      <span
+        aria-hidden="true"
+        className={valid ? "status-dot" : "h-1.5 w-1.5 rounded-full bg-mist"}
+      />
+      {valid ? "Valid" : "Expired"}
+    </span>
+  );
+}
+
+function CertificateShowcase({
+  cert,
+  flip,
+}: {
+  cert: Certificate;
+  flip: boolean;
+}) {
+  const titleId = `${cert.id}-title`;
+  const details: [string, string][] = [
     ["Issued by", cert.issuer],
     ["Awarded to", cert.holder],
-    ["Issued", formatDate(cert.issued)],
-    ["Valid until", formatDate(cert.validUntil)],
-  ] as const;
+    ...(cert.details ?? []).map(([k, v]): [string, string] => [k, v]),
+  ];
+  if (cert.issued) details.push(["Issued", formatDate(cert.issued)]);
+  if (cert.validUntil)
+    details.push(["Valid until", formatDate(cert.validUntil)]);
 
   return (
     <article
-      aria-labelledby="oracle-cert-title"
+      aria-labelledby={titleId}
       className="glass neon-card grid gap-8 p-5 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-10"
     >
       <a
-        aria-label="Open the full-size certificate image (new tab)"
-        className="cert-frame lg:col-span-7"
+        aria-label={`Open the full-size ${cert.title} certificate image (new tab)`}
+        className={`cert-frame lg:col-span-7 ${flip ? "lg:order-2" : ""}`}
         href={cert.image}
         rel="noopener noreferrer"
         target="_blank"
       >
         <img
-          alt={`${cert.badge} certificate issued by ${cert.issuer} to ${cert.holder} for ${cert.title}, dated ${formatDate(cert.issued)}.`}
+          alt={`${cert.badge}: ${cert.title}, issued by ${cert.issuer} to ${cert.holder}${cert.issued ? `, dated ${formatDate(cert.issued)}` : ""}.`}
           decoding="async"
           height={cert.imageHeight}
           loading="lazy"
@@ -99,27 +123,17 @@ function CertificateShowcase() {
           <span className="inline-flex items-center gap-2 rounded-full border border-glacier/40 bg-glacier/10 px-3 py-1 font-mono text-[0.7rem] text-glacier">
             <BadgeCheck aria-hidden="true" size={14} /> {cert.badge}
           </span>
-          <span
-            className={`inline-flex items-center gap-1.5 font-mono text-[0.7rem] ${valid ? "text-patina" : "text-mist"}`}
-          >
-            <span
-              aria-hidden="true"
-              className={
-                valid ? "status-dot" : "h-1.5 w-1.5 rounded-full bg-mist"
-              }
-            />
-            {valid ? "Valid" : "Expired"}
-          </span>
+          {cert.validUntil && <ValidityBadge validUntil={cert.validUntil} />}
         </div>
 
         <h3
           className="card-title mt-5 text-balance text-2xl sm:text-3xl"
-          id="oracle-cert-title"
+          id={titleId}
         >
           <span className="gradient-text">{cert.title}</span>
         </h3>
-        <p className="mt-3 text-sm leading-relaxed text-mist">
-          {credentials.certificationNote}
+        <p className="mt-3 text-pretty text-sm leading-relaxed text-mist">
+          {cert.note}
         </p>
 
         <dl className="mt-6 divide-y divide-line border-y border-line">
@@ -132,14 +146,16 @@ function CertificateShowcase() {
               <dd className="leading-5 text-frost">{value}</dd>
             </div>
           ))}
-          <div className="grid grid-cols-[7rem_1fr] items-center gap-4 py-2.5 text-sm">
-            <dt className="font-mono text-xs leading-5 text-mist">
-              Credential ID
-            </dt>
-            <dd>
-              <CredentialId />
-            </dd>
-          </div>
+          {cert.credentialId && (
+            <div className="grid grid-cols-[7rem_1fr] items-center gap-4 py-2.5 text-sm">
+              <dt className="font-mono text-xs leading-5 text-mist">
+                Credential ID
+              </dt>
+              <dd>
+                <CredentialId value={cert.credentialId} />
+              </dd>
+            </div>
+          )}
         </dl>
 
         <div className="mt-6 flex flex-wrap gap-3">
@@ -153,7 +169,7 @@ function CertificateShowcase() {
           </a>
           <a
             className="btn btn-ghost"
-            download="Hazqeel-Oracle-OCI-AI-Foundations-2025.pdf"
+            download={cert.downloadName}
             href={cert.pdf}
           >
             <Download aria-hidden="true" size={15} /> Download PDF
@@ -176,13 +192,17 @@ export function CredentialsSection() {
         id="credentials-heading"
         title="Certified, and still learning"
       >
-        An Oracle-certified foundation in cloud AI, alongside a full STEM
-        A-Level track.
+        Oracle-certified in cloud AI, trained through Dubai&apos;s One Million
+        Prompters initiative, alongside a full STEM A-Level track.
       </SectionHeading>
 
-      <Reveal>
-        <CertificateShowcase />
-      </Reveal>
+      <div className="grid gap-4 md:gap-5">
+        {certificates.map((cert, i) => (
+          <Reveal delay={i * 0.06} key={cert.id}>
+            <CertificateShowcase cert={cert} flip={i % 2 === 1} />
+          </Reveal>
+        ))}
+      </div>
 
       <Reveal className="mt-4 md:mt-5" delay={0.06}>
         <article className="glass flex flex-col gap-6 p-6 sm:flex-row sm:items-start sm:p-8">

@@ -73,7 +73,10 @@ export const specSheet: readonly SpecRow[] = [
     href: "https://www.virgolubes.com/",
   },
   { label: "Studying", value: "A-Level Mathematics, Physics, Chemistry" },
-  { label: "Certified", value: "Oracle OCI AI Foundations Associate" },
+  {
+    label: "Certified",
+    value: "Oracle OCI AI Foundations · 1 Million Prompters",
+  },
 ];
 
 export const groups: readonly ProjectGroup[] = [
@@ -229,25 +232,67 @@ export const engagements: readonly Engagement[] = [
 export const credentials = {
   track: "A-Level STEM: Mathematics, Physics, Chemistry",
   goal: "Aiming for a B.Sc. in Artificial Intelligence at MBZUAI (Mohamed bin Zayed University of Artificial Intelligence).",
-  certification: "Oracle Cloud Infrastructure AI Foundations Associate",
-  certificationNote: "Earned through Oracle's Race to AI programme.",
 } as const;
 
-/** Transcribed from the issued eCertificate in /certificates. */
-export const oracleCertificate = {
-  badge: "Oracle Certified Foundations Associate",
-  title: "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
-  issuer: "Oracle University",
-  holder: "Muhammad Hazqeel Abdullah",
-  issued: "2025-10-29",
-  validUntil: "2027-10-29",
-  credentialId: "323400890OCI25AICFA",
-  image: "/certificates/oracle-oci-ai-foundations-2025.webp",
-  imageSmall: "/certificates/oracle-oci-ai-foundations-2025-900.webp",
-  imageWidth: 1800,
-  imageHeight: 1265,
-  pdf: "/certificates/oracle-oci-ai-foundations-2025.pdf",
-} as const;
+export interface Certificate {
+  id: string;
+  badge: string;
+  title: string;
+  note: string;
+  issuer: string;
+  /** Name exactly as printed on the certificate. */
+  holder: string;
+  /** Extra detail rows shown under issuer and holder. */
+  details?: readonly (readonly [string, string])[];
+  /** ISO dates; omitted when the certificate doesn't print them. */
+  issued?: string;
+  validUntil?: string;
+  credentialId?: string;
+  image: string;
+  imageSmall: string;
+  imageWidth: number;
+  imageHeight: number;
+  pdf: string;
+  downloadName: string;
+}
+
+/** Transcribed from the issued certificates in /certificates. Nothing is inferred. */
+export const certificates: readonly Certificate[] = [
+  {
+    id: "oracle-oci-ai-foundations",
+    badge: "Oracle Certified Foundations Associate",
+    title:
+      "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
+    note: "Earned through Oracle's Race to AI programme.",
+    issuer: "Oracle University",
+    holder: "Muhammad Hazqeel Abdullah",
+    issued: "2025-10-29",
+    validUntil: "2027-10-29",
+    credentialId: "323400890OCI25AICFA",
+    image: "/certificates/oracle-oci-ai-foundations-2025.webp",
+    imageSmall: "/certificates/oracle-oci-ai-foundations-2025-900.webp",
+    imageWidth: 1800,
+    imageHeight: 1265,
+    pdf: "/certificates/oracle-oci-ai-foundations-2025.pdf",
+    downloadName: "Hazqeel-Oracle-OCI-AI-Foundations-2025.pdf",
+  },
+  {
+    id: "one-million-prompters",
+    badge: "Certificate of Completion",
+    title: "One Million Prompters",
+    note: "Dubai's initiative, launched by His Highness Sheikh Hamdan bin Mohammed bin Rashid Al Maktoum, Crown Prince of Dubai, to train one million people in prompt engineering for AI systems, in line with the Dubai Universal Blueprint for Artificial Intelligence.",
+    issuer:
+      "Dubai Future Foundation · Dubai Centre for Artificial Intelligence",
+    holder: "Muhammad Hazqeel",
+    details: [["Focus", "Prompt engineering for AI systems"]],
+    image: "/certificates/one-million-prompters.webp",
+    imageSmall: "/certificates/one-million-prompters-900.webp",
+    imageWidth: 1800,
+    imageHeight: 1274,
+    pdf: "/certificates/one-million-prompters.pdf",
+    downloadName: "Hazqeel-One-Million-Prompters.pdf",
+  },
+];
 
 export const projectCount = groups.reduce(
   (total, group) => total + group.projects.length,
