@@ -5,7 +5,10 @@
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
   "rewrites": [
-    { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/|assets/|certificates/).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
