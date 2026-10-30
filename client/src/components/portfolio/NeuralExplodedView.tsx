@@ -163,7 +163,16 @@ export default function NeuralExplodedView() {
           loop: true,
           alternate: true,
           ease: "inOutSine",
+          autoplay: false,
         });
+    // The pulse writes to 68 dots every frame, so it only runs on screen.
+    const pulseObserver = pulse
+      ? new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) pulse.play();
+          else pulse.pause();
+        })
+      : null;
+    pulseObserver?.observe(section);
 
     let target = 0;
     let current = 0;
@@ -246,6 +255,7 @@ export default function NeuralExplodedView() {
       window.removeEventListener("pointerup", endDrag);
       window.removeEventListener("pointercancel", endDrag);
       tl.pause();
+      pulseObserver?.disconnect();
       pulse?.revert();
     };
   }, []);

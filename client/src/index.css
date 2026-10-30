@@ -138,19 +138,34 @@
   );
 }
 
+/*
+ * Soft light pools. A radial gradient gives the blurred look without a
+ * filter, so drifting them costs a compositor transform instead of a
+ * full-size blur every frame.
+ */
 .glow {
   position: absolute;
   border-radius: 999px;
-  filter: blur(90px);
   pointer-events: none;
+  will-change: transform;
 }
 
 .glow-cyan {
-  background: rgb(64 224 240 / 0.22);
+  background: radial-gradient(
+    closest-side,
+    rgb(64 224 240 / 0.2),
+    rgb(64 224 240 / 0.08) 55%,
+    transparent
+  );
 }
 
 .glow-violet {
-  background: rgb(167 139 250 / 0.24);
+  background: radial-gradient(
+    closest-side,
+    rgb(167 139 250 / 0.22),
+    rgb(167 139 250 / 0.09) 55%,
+    transparent
+  );
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -276,14 +291,12 @@
   border-radius: 1.25rem;
   background: linear-gradient(
     160deg,
-    rgb(140 200 255 / 0.06),
-    rgb(140 200 255 / 0.015) 60%
+    rgb(18 26 40 / 0.72),
+    rgb(11 16 26 / 0.6) 60%
   );
   box-shadow:
     inset 0 1px 0 rgb(232 240 244 / 0.07),
     0 30px 60px -30px rgb(0 0 0 / 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Glass card whose border lights up with a cyan-violet gradient on hover. */
@@ -439,9 +452,8 @@
 
 .btn-ghost {
   border: 1px solid rgb(232 240 244 / 0.18);
-  background: rgb(11 15 23 / 0.5);
+  background: rgb(11 15 23 / 0.72);
   color: var(--color-frost);
-  backdrop-filter: blur(8px);
 }
 
 .btn-ghost:hover {
@@ -743,11 +755,21 @@
 }
 
 [data-theme="light"] .glow-cyan {
-  background: rgb(34 211 238 / 0.2);
+  background: radial-gradient(
+    closest-side,
+    rgb(34 211 238 / 0.22),
+    rgb(34 211 238 / 0.08) 55%,
+    transparent
+  );
 }
 
 [data-theme="light"] .glow-violet {
-  background: rgb(167 139 250 / 0.22);
+  background: radial-gradient(
+    closest-side,
+    rgb(167 139 250 / 0.24),
+    rgb(167 139 250 / 0.09) 55%,
+    transparent
+  );
 }
 
 [data-theme="light"] .hero-grid {
@@ -796,17 +818,6 @@
 
 [data-theme="light"] .term-input::placeholder {
   color: #8593a3;
-}
-
-/* ---------- Custom cursor (fine pointers only, enabled by CustomCursor). */
-.cursor-active,
-.cursor-active * {
-  cursor: none !important;
-}
-
-.custom-cursor {
-  mix-blend-mode: difference;
-  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {

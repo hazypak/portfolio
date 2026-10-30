@@ -1,7 +1,6 @@
 import { lazy, Suspense } from "react";
 import { ContactSection } from "@/components/portfolio/ContactSection";
 import { CredentialsSection } from "@/components/portfolio/CredentialsSection";
-import { CustomCursor } from "@/components/portfolio/CustomCursor";
 import { ExperienceSection } from "@/components/portfolio/ExperienceSection";
 import { HeroSection } from "@/components/portfolio/HeroSection";
 import { ProjectSection } from "@/components/portfolio/ProjectSection";
@@ -23,7 +22,6 @@ export default function Home() {
       >
         Skip to work
       </a>
-      <CustomCursor />
       <SiteHeader />
       <main className="relative z-10">
         <HeroSection />

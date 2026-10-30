@@ -15,6 +15,8 @@ interface Node {
 }
 
 const LINK_DISTANCE = 140;
+const LINK_DISTANCE_SQ = LINK_DISTANCE * LINK_DISTANCE;
+const LINK_BUCKETS = 4;
 
 export function ParticleField({ className = "" }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -35,13 +37,13 @@ export function ParticleField({ className = "" }: { className?: string }) {
     let visible = true;
 
     function resize() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = canvas!.clientWidth;
       height = canvas!.clientHeight;
       canvas!.width = width * dpr;
       canvas!.height = height * dpr;
       ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round(Math.min(90, (width * height) / 16000));
+      const count = Math.round(Math.min(70, (width * height) / 18000));
       nodes = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -52,33 +54,55 @@ export function ParticleField({ className = "" }: { className?: string }) {
       }));
     }
 
+    // Links are bucketed by opacity so each frame strokes a handful of paths
+    // instead of one per pair, and squared distances skip the sqrt for pairs
+    // that are too far apart. Canvas shadowBlur is avoided: it is rasterised
+    // on the CPU and was the most expensive part of every frame.
+    const buckets: Path2D[] = [];
     function draw() {
-      ctx!.clearRect(0, 0, width, height);
+      const c = ctx!;
+      c.clearRect(0, 0, width, height);
+      for (let k = 0; k < LINK_BUCKETS; k++) buckets[k] = new Path2D();
       for (let i = 0; i < nodes.length; i++) {
         const a = nodes[i];
         for (let j = i + 1; j < nodes.length; j++) {
           const b = nodes[j];
-          const d = Math.hypot(a.x - b.x, a.y - b.y);
-          if (d < LINK_DISTANCE) {
-            ctx!.strokeStyle = `rgb(${colorA} / ${0.16 * (1 - d / LINK_DISTANCE)})`;
-            ctx!.lineWidth = 1;
-            ctx!.beginPath();
-            ctx!.moveTo(a.x, a.y);
-            ctx!.lineTo(b.x, b.y);
-            ctx!.stroke();
-          }
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 >= LINK_DISTANCE_SQ) continue;
+          const strength = 1 - Math.sqrt(d2) / LINK_DISTANCE;
+          const k = Math.min(
+            LINK_BUCKETS - 1,
+            Math.floor(strength * LINK_BUCKETS)
+          );
+          buckets[k].moveTo(a.x, a.y);
+          buckets[k].lineTo(b.x, b.y);
         }
-        const near = Math.hypot(a.x - pointer.x, a.y - pointer.y) < 160;
-        ctx!.fillStyle = a.violet
-          ? `rgb(${colorB} / 0.9)`
-          : `rgb(${colorA} / 0.85)`;
-        ctx!.shadowColor = ctx!.fillStyle;
-        ctx!.shadowBlur = near ? 14 : 6;
-        ctx!.beginPath();
-        ctx!.arc(a.x, a.y, near ? a.r * 1.8 : a.r, 0, Math.PI * 2);
-        ctx!.fill();
       }
-      ctx!.shadowBlur = 0;
+      c.lineWidth = 1;
+      for (let k = 0; k < LINK_BUCKETS; k++) {
+        c.strokeStyle = `rgb(${colorA} / ${(0.16 * (k + 0.5)) / LINK_BUCKETS})`;
+        c.stroke(buckets[k]);
+      }
+
+      for (const n of nodes) {
+        const dx = n.x - pointer.x;
+        const dy = n.y - pointer.y;
+        const near = dx * dx + dy * dy < 160 * 160;
+        const rgb = n.violet ? colorB : colorA;
+        if (near) {
+          // A cheap halo in place of shadowBlur.
+          c.fillStyle = `rgb(${rgb} / 0.18)`;
+          c.beginPath();
+          c.arc(n.x, n.y, n.r * 4.5, 0, Math.PI * 2);
+          c.fill();
+        }
+        c.fillStyle = `rgb(${rgb} / ${n.violet ? 0.9 : 0.85})`;
+        c.beginPath();
+        c.arc(n.x, n.y, near ? n.r * 1.8 : n.r, 0, Math.PI * 2);
+        c.fill();
+      }
     }
 
     function step() {
